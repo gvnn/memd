@@ -23,15 +23,17 @@ import json
 class CacheManager:
 
     def __init__(self):
-        self.enabled = False
-        self.__cacheClient = None
         self.enabled = True
         self.__cacheClient = memcache.Client(['localhost:11211'])
 
     def set(self, key, value, time = 0):
         if self.__cacheClient:
             self.__cacheClient.set(key, value, time)
-
+            
+    def delete(self, key):
+        if self.__cacheClient:
+            self.__cacheClient.delete(key)
+            
     def get(self, key):
         if self.__cacheClient:
             return self.__cacheClient.get(key)
@@ -52,9 +54,10 @@ class memd(object):
 
     def __call__(self, fn):
         @wraps(fn)
-        def memd_wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
+            
             # if not enabled executed the function
-            if mcd.enabled:
+            if self.mcd.enabled:
                 # key generation
                 key = self.custom_key
                 if not key:
@@ -63,16 +66,16 @@ class memd(object):
                     # convert it in a MD5
                     key = md5(jsonSpec.encode('utf-8')).hexdigest()
                 # get value
-                output = mcd.get(key)
+                output = self.mcd.get(key)
                 if not output:
                     # get output
                     output = fn(*args, **kwargs)
                     if not output:
-                        output = cache_none()
+                        output = None
                     # set value & return
-                    mcd.set(key, output, time=self.ttl)
-                return None if output.__class__ is cache_none else output
+                    self.mcd.set(key, output, time=self.ttl)
+                return None if output.__class__ is None else output
             else:
                 # execute function
                 return fn(*args, **kwargs)
-        return memd_wrapper
+        return wrapper
