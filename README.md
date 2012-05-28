@@ -19,3 +19,7 @@ memcached decorator for lazy developers (like me) built on top of python-memcach
     @memd(ttl=100)
     def foo(bar):
         return bar
+
+### licence
+
+memd is released under the MIT license

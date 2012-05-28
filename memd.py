@@ -17,7 +17,6 @@ usage:
     @memd(ttl=100)
     def foo(bar):
         return bar
-
 """
 import memcache
 from hashlib import md5
