@@ -6,11 +6,16 @@ memcached decorator for lazy developers (like me) built on top of python-memcach
 ### usage
 
     # simple
-    @memd
+    @memd()
     def foo(bar):
         return bar
     
-    # with custom key and ttl
+    # with custom key
     @memd(custom_key="yourkey")
+    def foo(bar):
+        return bar
+        
+    # or with ttl
+    @memd(ttl=100)
     def foo(bar):
         return bar
